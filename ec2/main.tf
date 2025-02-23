@@ -1,12 +1,3 @@
-data "aws_vpc" "main_vpc" {
-  id = "vpc-0526495e467ba8d2d"
-}
-
-data "aws_subnet" "public_subnet" {
-  id = "subnet-079eb455e51ad5010"
-  vpc_id = data.aws_vpc.main_vpc.id
-}
-
 resource "aws_security_group" "allow_http" {
   name        = "allow_http"
   description = "Allow HTTP inbound traffic"
@@ -44,6 +35,7 @@ resource "aws_instance" "my_first_instance" {
     volume_size = 8
     volume_type = "gp2"
   }
+  iam_instance_profile = data.terraform_remote_state.iam_readonly_profile.outputs.iam_readonly_profile_name
 
   vpc_security_group_ids = [aws_security_group.allow_http.id]
 
